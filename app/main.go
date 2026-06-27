@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -12,11 +11,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-)
 
-var (
-	poolDB *sql.DB
-	dsn    string
+	"connectionpool-sandbox/adapter/handler"
+	"connectionpool-sandbox/adapter/repository"
+	"connectionpool-sandbox/usecase"
 )
 
 var (
@@ -39,13 +37,12 @@ var (
 )
 
 func main() {
-	dsn = os.Getenv("MYSQL_DSN")
+	dsn := os.Getenv("MYSQL_DSN")
 	if dsn == "" {
 		dsn = "root:root@tcp(localhost:3306)/sandbox?parseTime=true"
 	}
 
-	var err error
-	poolDB, err = sql.Open("mysql", dsn)
+	poolDB, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatalf("open pool DB: %v", err)
 	}
@@ -78,9 +75,15 @@ func main() {
 		}
 	}()
 
+	poolRepo := repository.NewPoolRepository(poolDB)
+	noPoolRepo := repository.NewNoPoolRepository(dsn)
+	withPoolUC := usecase.NewRecordUsecase(poolRepo)
+	withoutPoolUC := usecase.NewRecordUsecase(noPoolRepo)
+	h := handler.New(withPoolUC, withoutPoolUC)
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/with-pool", withPoolHandler)
-	mux.HandleFunc("/without-pool", withoutPoolHandler)
+	mux.HandleFunc("/with-pool", h.WithPool)
+	mux.HandleFunc("/without-pool", h.WithoutPool)
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
@@ -88,50 +91,4 @@ func main() {
 
 	log.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
-}
-
-type Response struct {
-	Mode       string  `json:"mode"`
-	DurationMs float64 `json:"duration_ms"`
-	Error      string  `json:"error,omitempty"`
-}
-
-func withPoolHandler(w http.ResponseWriter, r *http.Request) {
-	start := time.Now()
-
-	_, err := poolDB.ExecContext(r.Context(), "INSERT INTO requests () VALUES ()")
-
-	resp := Response{
-		Mode:       "with-pool",
-		DurationMs: float64(time.Since(start).Microseconds()) / 1000.0,
-	}
-	if err != nil {
-		resp.Error = err.Error()
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
-}
-
-func withoutPoolHandler(w http.ResponseWriter, r *http.Request) {
-	start := time.Now()
-
-	db, err := sql.Open("mysql", dsn)
-	if err == nil {
-		db.SetMaxOpenConns(1)
-		db.SetMaxIdleConns(0)
-		defer db.Close()
-		_, err = db.ExecContext(r.Context(), "INSERT INTO requests () VALUES ()")
-	}
-
-	resp := Response{
-		Mode:       "without-pool",
-		DurationMs: float64(time.Since(start).Microseconds()) / 1000.0,
-	}
-	if err != nil {
-		resp.Error = err.Error()
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
 }
