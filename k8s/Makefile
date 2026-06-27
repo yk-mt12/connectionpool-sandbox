@@ -5,7 +5,6 @@ NS = connectionpool-sandbox
 setup: helm-repos namespace mysql influxdb mysql-exporter app prometheus grafana
 
 helm-repos:
-	helm repo add bitnami https://charts.bitnami.com/bitnami
 	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 	helm repo add grafana https://grafana.github.io/helm-charts
 	helm repo update
@@ -14,7 +13,8 @@ namespace:
 	kubectl apply -f namespace.yaml
 
 mysql:
-	helm upgrade --install mysql bitnami/mysql -n $(NS) -f helm-values/mysql.yaml --wait
+	kubectl apply -f mysql/ -n $(NS)
+	kubectl wait --for=condition=ready pod/mysql-0 -n $(NS) --timeout=120s
 
 influxdb:
 	kubectl apply -f influxdb/ -n $(NS)
