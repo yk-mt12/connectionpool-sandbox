@@ -99,7 +99,7 @@ type Response struct {
 func withPoolHandler(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
-	_, err := poolDB.ExecContext(r.Context(), "SELECT SLEEP(0.001)")
+	_, err := poolDB.ExecContext(r.Context(), "INSERT INTO requests () VALUES ()")
 
 	resp := Response{
 		Mode:       "with-pool",
@@ -121,7 +121,7 @@ func withoutPoolHandler(w http.ResponseWriter, r *http.Request) {
 		db.SetMaxOpenConns(1)
 		db.SetMaxIdleConns(0)
 		defer db.Close()
-		_, err = db.ExecContext(r.Context(), "SELECT SLEEP(0.001)")
+		_, err = db.ExecContext(r.Context(), "INSERT INTO requests () VALUES ()")
 	}
 
 	resp := Response{
