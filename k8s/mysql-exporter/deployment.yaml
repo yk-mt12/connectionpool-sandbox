@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-exporter
+  namespace: connectionpool-sandbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-exporter
+  template:
+    metadata:
+      labels:
+        app: mysql-exporter
+    spec:
+      containers:
+        - name: mysql-exporter
+          image: prom/mysqld-exporter:v0.15.1
+          args:
+            - --mysqld.address=mysql:3306
+            - --mysqld.username=exporter
+          ports:
+            - containerPort: 9104
+          env:
+            - name: MYSQLD_EXPORTER_PASSWORD
+              value: exporter

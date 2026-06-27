@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-loadtest
+  namespace: connectionpool-sandbox
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: k6
+          image: grafana/k6:latest
+          args:
+            - run
+            - /scripts/scenario.js
+            - --out
+            - influxdb=http://influxdb:8086/k6
+          env:
+            - name: BASE_URL
+              value: http://app:8080
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+      volumes:
+        - name: scripts
+          configMap:
+            name: k6-scripts

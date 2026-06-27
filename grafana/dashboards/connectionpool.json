@@ -222,6 +222,209 @@
       ],
       "title": "MySQL Queries/sec",
       "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "influxdb" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2 },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 26 },
+      "id": 6,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "alias": "with-pool p50",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": ["50"], "type": "percentile" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
+        },
+        {
+          "alias": "with-pool p95",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
+        },
+        {
+          "alias": "without-pool p50",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": ["50"], "type": "percentile" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
+        },
+        {
+          "alias": "without-pool p95",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
+        }
+      ],
+      "title": "Latency by Endpoint (p50 / p95)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "influxdb" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2 },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
+      "id": 7,
+      "options": {
+        "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "alias": "with-pool errors",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
+          "measurement": "http_req_failed",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "sum" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
+        },
+        {
+          "alias": "without-pool errors",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
+          "measurement": "http_req_failed",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "sum" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
+        }
+      ],
+      "title": "Error Count by Endpoint",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "influxdb" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2 },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 36 },
+      "id": 8,
+      "options": {
+        "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "alias": "with-pool error rate",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
+          "measurement": "http_req_failed",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }, { "params": ["* 100"], "type": "math" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
+        },
+        {
+          "alias": "without-pool error rate",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
+          "measurement": "http_req_failed",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }, { "params": ["* 100"], "type": "math" }]],
+          "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
+        }
+      ],
+      "title": "Error Rate by Endpoint (%)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2 },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 44 },
+      "id": 9,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total{job=\"app\"}[30s]) * 100",
+          "legendFormat": "app CPU %",
+          "refId": "A"
+        }
+      ],
+      "title": "App Process CPU Usage (%)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2 },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 44 },
+      "id": 10,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes{job=\"app\"}",
+          "legendFormat": "app RSS Memory",
+          "refId": "A"
+        }
+      ],
+      "title": "App Process Memory Usage",
+      "type": "timeseries"
     }
   ],
   "refresh": "5s",

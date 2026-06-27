@@ -9,6 +9,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -29,8 +30,8 @@ func main() {
 	}
 	defer poolDB.Close()
 
-	poolDB.SetMaxOpenConns(10)
-	poolDB.SetMaxIdleConns(5)
+	poolDB.SetMaxOpenConns(25)
+	poolDB.SetMaxIdleConns(25)
 	poolDB.SetConnMaxLifetime(5 * time.Minute)
 
 	if err := poolDB.Ping(); err != nil {
@@ -44,6 +45,7 @@ func main() {
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
@@ -75,14 +77,21 @@ func withPoolHandler(w http.ResponseWriter, r *http.Request) {
 func withoutPoolHandler(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
-	// TODO(human): コネクションプールなしの実装をここに追加してください
-	// 毎リクエストで新しい sql.DB を生成し、クエリ実行後にクローズします
-	// dsn 変数を使って接続を開いてください
-	// ヒント: SetMaxIdleConns(0) でアイドル接続を保持しないようにできます
+	db, err := sql.Open("mysql", dsn)
+	if err == nil {
+		db.SetMaxOpenConns(1)
+		db.SetMaxIdleConns(0)
+		defer db.Close()
+		_, err = db.ExecContext(r.Context(), "SELECT SLEEP(0.001)")
+	}
 
 	resp := Response{
 		Mode:       "without-pool",
 		DurationMs: float64(time.Since(start).Microseconds()) / 1000.0,
+	}
+	if err != nil {
+		resp.Error = err.Error()
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)

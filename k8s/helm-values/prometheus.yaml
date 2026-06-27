@@ -1,0 +1,17 @@
+server:
+  persistentVolume:
+    size: 1Gi
+
+extraScrapeConfigs: |
+  - job_name: app
+    static_configs:
+      - targets: ['app:8080']
+    metrics_path: /metrics
+  - job_name: mysql
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+
+alertmanager:
+  enabled: false
+prometheus-pushgateway:
+  enabled: false
