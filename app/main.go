@@ -9,12 +9,33 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
 	poolDB *sql.DB
 	dsn    string
+)
+
+var (
+	dbOpenConns = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "db_open_connections",
+		Help: "Number of open connections to the database",
+	}, []string{"mode"})
+	dbInUseConns = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "db_in_use_connections",
+		Help: "Number of connections currently in use",
+	}, []string{"mode"})
+	dbIdleConns = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "db_idle_connections",
+		Help: "Number of idle connections",
+	}, []string{"mode"})
+	tableRowCount = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "db_table_row_count",
+		Help: "Exact row count of sandbox.requests table",
+	})
 )
 
 func main() {
@@ -38,6 +59,24 @@ func main() {
 		log.Fatalf("ping MySQL: %v", err)
 	}
 	log.Println("connected to MySQL (with pool)")
+
+	go func() {
+		for range time.Tick(2 * time.Second) {
+			s := poolDB.Stats()
+			dbOpenConns.WithLabelValues("with-pool").Set(float64(s.OpenConnections))
+			dbInUseConns.WithLabelValues("with-pool").Set(float64(s.InUse))
+			dbIdleConns.WithLabelValues("with-pool").Set(float64(s.Idle))
+		}
+	}()
+
+	go func() {
+		for range time.Tick(5 * time.Second) {
+			var count float64
+			if err := poolDB.QueryRow("SELECT COUNT(*) FROM requests").Scan(&count); err == nil {
+				tableRowCount.Set(count)
+			}
+		}
+	}()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/with-pool", withPoolHandler)

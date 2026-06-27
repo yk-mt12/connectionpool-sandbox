@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: connectionpool-sandbox
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: root-password
+            - name: MYSQL_DATABASE
+              value: sandbox
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+            - name: init
+              mountPath: /docker-entrypoint-initdb.d
+          readinessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: init
+          configMap:
+            name: mysql-init
