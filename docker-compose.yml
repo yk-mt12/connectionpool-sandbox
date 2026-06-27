@@ -23,6 +23,7 @@ services:
       - "8080:8080"
     environment:
       MYSQL_DSN: "root:root@tcp(mysql:3306)/sandbox?parseTime=true"
+    restart: on-failure
     depends_on:
       mysql:
         condition: service_healthy
