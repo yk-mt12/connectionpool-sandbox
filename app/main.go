@@ -118,6 +118,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/with-pool", otelhttp.NewHandler(http.HandlerFunc(h.WithPool), "/with-pool"))
 	mux.Handle("/without-pool", otelhttp.NewHandler(http.HandlerFunc(h.WithoutPool), "/without-pool"))
+	mux.Handle("/heavy", otelhttp.NewHandler(http.HandlerFunc(h.Heavy), "/heavy"))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
