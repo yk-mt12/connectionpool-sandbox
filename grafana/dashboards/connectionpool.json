@@ -9,11 +9,7 @@
     {
       "datasource": { "type": "influxdb", "uid": "influxdb" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "short"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "short" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
@@ -25,14 +21,8 @@
       "targets": [
         {
           "alias": "VUs",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["null"], "type": "fill" }
-          ],
-          "measurement": "vus",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "vus", "orderByTime": "ASC", "policy": "default", "refId": "A",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
           "tags": []
@@ -44,11 +34,7 @@
     {
       "datasource": { "type": "influxdb", "uid": "influxdb" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "short"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "short" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
@@ -60,28 +46,16 @@
       "targets": [
         {
           "alias": "with-pool",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["0"], "type": "fill" }
-          ],
-          "measurement": "http_reqs",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
+          "measurement": "http_reqs", "orderByTime": "ASC", "policy": "default", "refId": "A",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "count" }]],
           "tags": [{ "key": "scenario", "operator": "=", "value": "with_pool" }]
         },
         {
           "alias": "without-pool",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["0"], "type": "fill" }
-          ],
-          "measurement": "http_reqs",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
+          "measurement": "http_reqs", "orderByTime": "ASC", "policy": "default", "refId": "B",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "count" }]],
           "tags": [{ "key": "scenario", "operator": "=", "value": "without_pool" }]
@@ -93,76 +67,44 @@
     {
       "datasource": { "type": "influxdb", "uid": "influxdb" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "ms"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "ms" },
         "overrides": []
       },
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
       "id": 3,
       "options": {
-        "legend": {
-          "calcs": ["mean", "max"],
-          "displayMode": "table",
-          "placement": "right"
-        },
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right" },
         "tooltip": { "mode": "multi" }
       },
       "targets": [
         {
           "alias": "with-pool p50",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["null"], "type": "fill" }
-          ],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "A",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["50"], "type": "percentile" }]],
           "tags": [{ "key": "scenario", "operator": "=", "value": "with_pool" }]
         },
         {
           "alias": "with-pool p95",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["null"], "type": "fill" }
-          ],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "B",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
           "tags": [{ "key": "scenario", "operator": "=", "value": "with_pool" }]
         },
         {
           "alias": "without-pool p50",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["null"], "type": "fill" }
-          ],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "C",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["50"], "type": "percentile" }]],
           "tags": [{ "key": "scenario", "operator": "=", "value": "without_pool" }]
         },
         {
           "alias": "without-pool p95",
-          "groupBy": [
-            { "params": ["$__interval"], "type": "time" },
-            { "params": ["null"], "type": "fill" }
-          ],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
+          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "D",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
           "tags": [{ "key": "scenario", "operator": "=", "value": "without_pool" }]
@@ -174,11 +116,7 @@
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "short"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "short" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
@@ -188,11 +126,7 @@
         "tooltip": { "mode": "single" }
       },
       "targets": [
-        {
-          "expr": "mysql_global_status_threads_connected",
-          "legendFormat": "Active Connections",
-          "refId": "A"
-        }
+        { "expr": "mysql_global_status_threads_connected", "legendFormat": "Active Connections", "refId": "A" }
       ],
       "title": "MySQL Active Connections",
       "type": "timeseries"
@@ -200,11 +134,7 @@
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "reqps"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "reqps" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 },
@@ -214,11 +144,7 @@
         "tooltip": { "mode": "single" }
       },
       "targets": [
-        {
-          "expr": "rate(mysql_global_status_queries[30s])",
-          "legendFormat": "Queries/sec",
-          "refId": "A"
-        }
+        { "expr": "rate(mysql_global_status_queries[30s])", "legendFormat": "Queries/sec", "refId": "A" }
       ],
       "title": "MySQL Queries/sec",
       "type": "timeseries"
@@ -226,11 +152,7 @@
     {
       "datasource": { "type": "influxdb", "uid": "influxdb" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "ms"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "ms" },
         "overrides": []
       },
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 26 },
@@ -243,10 +165,7 @@
         {
           "alias": "with-pool p50",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "A",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["50"], "type": "percentile" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
@@ -254,10 +173,7 @@
         {
           "alias": "with-pool p95",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "B",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
@@ -265,10 +181,7 @@
         {
           "alias": "without-pool p50",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "C",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["50"], "type": "percentile" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
@@ -276,10 +189,7 @@
         {
           "alias": "without-pool p95",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_duration",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
+          "measurement": "http_req_duration", "orderByTime": "ASC", "policy": "default", "refId": "D",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
@@ -291,11 +201,7 @@
     {
       "datasource": { "type": "influxdb", "uid": "influxdb" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "short"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "short" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
@@ -308,10 +214,7 @@
         {
           "alias": "with-pool errors",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
-          "measurement": "http_req_failed",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
+          "measurement": "http_req_failed", "orderByTime": "ASC", "policy": "default", "refId": "A",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "sum" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
@@ -319,10 +222,7 @@
         {
           "alias": "without-pool errors",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
-          "measurement": "http_req_failed",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
+          "measurement": "http_req_failed", "orderByTime": "ASC", "policy": "default", "refId": "B",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "sum" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
@@ -334,11 +234,7 @@
     {
       "datasource": { "type": "influxdb", "uid": "influxdb" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "percent"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "percent" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 36 },
@@ -351,10 +247,7 @@
         {
           "alias": "with-pool error rate",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
-          "measurement": "http_req_failed",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
+          "measurement": "http_req_failed", "orderByTime": "ASC", "policy": "default", "refId": "A",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }, { "params": ["* 100"], "type": "math" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "with-pool" }]
@@ -362,10 +255,7 @@
         {
           "alias": "without-pool error rate",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["0"], "type": "fill" }],
-          "measurement": "http_req_failed",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
+          "measurement": "http_req_failed", "orderByTime": "ASC", "policy": "default", "refId": "B",
           "resultFormat": "time_series",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }, { "params": ["* 100"], "type": "math" }]],
           "tags": [{ "key": "name", "operator": "=", "value": "without-pool" }]
@@ -377,11 +267,7 @@
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "percent"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "percent" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 44 },
@@ -391,11 +277,7 @@
         "tooltip": { "mode": "single" }
       },
       "targets": [
-        {
-          "expr": "rate(process_cpu_seconds_total{job=\"app\"}[30s]) * 100",
-          "legendFormat": "app CPU %",
-          "refId": "A"
-        }
+        { "expr": "rate(process_cpu_seconds_total{job=\"app\"}[30s]) * 100", "legendFormat": "app CPU %", "refId": "A" }
       ],
       "title": "App Process CPU Usage (%)",
       "type": "timeseries"
@@ -403,11 +285,7 @@
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 2 },
-          "unit": "bytes"
-        },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2 }, "unit": "bytes" },
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 44 },
@@ -417,20 +295,106 @@
         "tooltip": { "mode": "single" }
       },
       "targets": [
-        {
-          "expr": "process_resident_memory_bytes{job=\"app\"}",
-          "legendFormat": "app RSS Memory",
-          "refId": "A"
-        }
+        { "expr": "process_resident_memory_bytes{job=\"app\"}", "legendFormat": "app RSS Memory", "refId": "A" }
       ],
       "title": "App Process Memory Usage",
       "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 52 },
+      "id": 11,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        { "expr": "db_open_connections{job=\"app\"}", "legendFormat": "open ({{mode}})", "refId": "A" },
+        { "expr": "db_in_use_connections{job=\"app\"}", "legendFormat": "in-use ({{mode}})", "refId": "B" },
+        { "expr": "db_idle_connections{job=\"app\"}", "legendFormat": "idle ({{mode}})", "refId": "C" }
+      ],
+      "title": "DB Connection Pool: Open / In-Use / Idle",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 60 },
+      "id": 12,
+      "options": {
+        "legend": { "calcs": ["last", "max"], "displayMode": "table", "placement": "bottom" },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        { "expr": "db_table_row_count{job=\"app\"}", "legendFormat": "row count", "refId": "A" }
+      ],
+      "title": "requests テーブル行数",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 68 },
+      "id": 13,
+      "title": "Continuous Profiling (Pyroscope)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-pyroscope-datasource", "uid": "pyroscope" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 69 },
+      "id": 14,
+      "options": {},
+      "targets": [
+        {
+          "profileTypeId": "process_cpu:cpu:nanoseconds:cpu:nanoseconds",
+          "labelSelector": "{service_name=\"connectionpool-sandbox\"}",
+          "refId": "A",
+          "groupBy": []
+        }
+      ],
+      "title": "CPU Flame Graph",
+      "type": "flamegraph"
+    },
+    {
+      "datasource": { "type": "grafana-pyroscope-datasource", "uid": "pyroscope" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 14, "w": 12, "x": 0, "y": 83 },
+      "id": 15,
+      "options": {},
+      "targets": [
+        {
+          "profileTypeId": "memory:inuse_space:bytes:space:bytes",
+          "labelSelector": "{service_name=\"connectionpool-sandbox\"}",
+          "refId": "A",
+          "groupBy": []
+        }
+      ],
+      "title": "Memory In-Use Flame Graph",
+      "type": "flamegraph"
+    },
+    {
+      "datasource": { "type": "grafana-pyroscope-datasource", "uid": "pyroscope" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 14, "w": 12, "x": 12, "y": 83 },
+      "id": 16,
+      "options": {},
+      "targets": [
+        {
+          "profileTypeId": "goroutine:goroutines:count:goroutine:count",
+          "labelSelector": "{service_name=\"connectionpool-sandbox\"}",
+          "refId": "A",
+          "groupBy": []
+        }
+      ],
+      "title": "Goroutines Flame Graph",
+      "type": "flamegraph"
     }
   ],
   "refresh": "5s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["k6", "mysql", "connection-pool"],
+  "tags": ["k6", "mysql", "connection-pool", "pyroscope"],
   "time": { "from": "now-15m", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
