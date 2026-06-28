@@ -88,8 +88,8 @@ func main() {
 
 	poolRepo := repository.NewPoolRepository(poolDB)
 	noPoolRepo := repository.NewNoPoolRepository(dsn)
-	withPoolUC := usecase.NewRecordUsecase(poolRepo)
-	withoutPoolUC := usecase.NewRecordUsecase(noPoolRepo)
+	withPoolUC := usecase.NewRecordUsecase(poolRepo, "with-pool")
+	withoutPoolUC := usecase.NewRecordUsecase(noPoolRepo, "without-pool")
 	h := handler.New(withPoolUC, withoutPoolUC)
 
 	mux := http.NewServeMux()
