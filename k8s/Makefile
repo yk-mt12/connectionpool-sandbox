@@ -2,7 +2,7 @@
 
 NS = connectionpool-sandbox
 
-setup: helm-repos namespace mysql influxdb mysql-exporter app prometheus grafana
+setup: helm-repos namespace mysql influxdb mysql-exporter tempo app prometheus grafana
 
 helm-repos:
 	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -25,6 +25,9 @@ mysql-exporter:
 app:
 	minikube image build -t connectionpool-sandbox-app:latest ../app
 	kubectl apply -f app/ -n $(NS)
+
+tempo:
+	kubectl apply -f tempo/ -n $(NS)
 
 prometheus:
 	helm upgrade --install prometheus prometheus-community/prometheus -n $(NS) -f helm-values/prometheus.yaml

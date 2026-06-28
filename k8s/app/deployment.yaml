@@ -22,6 +22,8 @@ spec:
           env:
             - name: MYSQL_DSN
               value: "root:root@tcp(mysql:3306)/sandbox?parseTime=true"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://tempo:4318"
           readinessProbe:
             httpGet:
               path: /health
