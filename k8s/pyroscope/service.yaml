@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pyroscope
+  namespace: connectionpool-sandbox
+spec:
+  selector:
+    app: pyroscope
+  ports:
+    - port: 4040
+      targetPort: 4040

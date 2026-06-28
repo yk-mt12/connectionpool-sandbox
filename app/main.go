@@ -9,6 +9,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	pyroscope "github.com/grafana/pyroscope-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -47,6 +48,28 @@ func main() {
 		log.Fatalf("init tracer: %v", err)
 	}
 	defer tp.Shutdown(ctx)
+
+	pyroscopeAddr := os.Getenv("PYROSCOPE_SERVER_ADDRESS")
+	if pyroscopeAddr == "" {
+		pyroscopeAddr = "http://pyroscope:4040"
+	}
+	profiler, err := pyroscope.Start(pyroscope.Config{
+		ApplicationName: "connectionpool-sandbox",
+		ServerAddress:   pyroscopeAddr,
+		ProfileTypes: []pyroscope.ProfileType{
+			pyroscope.ProfileCPU,
+			pyroscope.ProfileAllocObjects,
+			pyroscope.ProfileAllocSpace,
+			pyroscope.ProfileInuseObjects,
+			pyroscope.ProfileInuseSpace,
+			pyroscope.ProfileGoroutines,
+		},
+	})
+	if err != nil {
+		log.Printf("init pyroscope: %v (profiling disabled)", err)
+	} else {
+		defer profiler.Stop()
+	}
 
 	dsn := os.Getenv("MYSQL_DSN")
 	if dsn == "" {

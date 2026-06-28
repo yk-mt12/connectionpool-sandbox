@@ -17,16 +17,24 @@ services:
       timeout: 5s
       retries: 12
 
+  pyroscope:
+    image: grafana/pyroscope:latest
+    ports:
+      - "4040:4040"
+
   app:
     build: ./app
     ports:
       - "8080:8080"
     environment:
       MYSQL_DSN: "root:root@tcp(mysql:3306)/sandbox?parseTime=true"
+      PYROSCOPE_SERVER_ADDRESS: "http://pyroscope:4040"
     restart: on-failure
     depends_on:
       mysql:
         condition: service_healthy
+      pyroscope:
+        condition: service_started
 
   mysql-exporter:
     image: prom/mysqld-exporter:v0.15.1
