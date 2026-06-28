@@ -23,8 +23,8 @@ argocd-password:
 		-o jsonpath="{.data.password}" | base64 -d && echo
 
 argocd-ui:
-	kubectl port-forward svc/argocd-server -n argocd 8080:443 &
-	@echo "Open https://localhost:8080  (admin / run 'make argocd-password')"
+	kubectl port-forward svc/argocd-server -n argocd 8081:443 &
+	@echo "Open https://localhost:8081  (admin / run 'make argocd-password')"
 
 argocd-clean:
 	helm uninstall argocd -n argocd || true

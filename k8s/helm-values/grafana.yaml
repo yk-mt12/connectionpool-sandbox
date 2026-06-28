@@ -1,5 +1,8 @@
 adminPassword: admin
 
+plugins:
+  - grafana-pyroscope-datasource
+
 grafana.ini:
   auth.anonymous:
     enabled: true
