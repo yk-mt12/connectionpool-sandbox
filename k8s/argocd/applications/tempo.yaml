@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: connectionpool-tempo
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/yk-mt12/connectionpool-sandbox.git
+    targetRevision: HEAD
+    path: k8s/tempo
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: connectionpool-sandbox
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
