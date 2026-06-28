@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo
+  namespace: connectionpool-sandbox
+spec:
+  selector:
+    app: tempo
+  ports:
+    - name: http
+      port: 3100
+      targetPort: 3100
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318

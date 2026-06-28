@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net/http"
@@ -11,9 +12,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
 	"connectionpool-sandbox/adapter/handler"
 	"connectionpool-sandbox/adapter/repository"
+	"connectionpool-sandbox/infrastructure"
 	"connectionpool-sandbox/usecase"
 )
 
@@ -37,6 +40,14 @@ var (
 )
 
 func main() {
+	ctx := context.Background()
+
+	tp, err := infrastructure.NewTracerProvider(ctx)
+	if err != nil {
+		log.Fatalf("init tracer: %v", err)
+	}
+	defer tp.Shutdown(ctx)
+
 	dsn := os.Getenv("MYSQL_DSN")
 	if dsn == "" {
 		dsn = "root:root@tcp(localhost:3306)/sandbox?parseTime=true"
@@ -77,13 +88,13 @@ func main() {
 
 	poolRepo := repository.NewPoolRepository(poolDB)
 	noPoolRepo := repository.NewNoPoolRepository(dsn)
-	withPoolUC := usecase.NewRecordUsecase(poolRepo)
-	withoutPoolUC := usecase.NewRecordUsecase(noPoolRepo)
+	withPoolUC := usecase.NewRecordUsecase(poolRepo, "with-pool")
+	withoutPoolUC := usecase.NewRecordUsecase(noPoolRepo, "without-pool")
 	h := handler.New(withPoolUC, withoutPoolUC)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/with-pool", h.WithPool)
-	mux.HandleFunc("/without-pool", h.WithoutPool)
+	mux.Handle("/with-pool", otelhttp.NewHandler(http.HandlerFunc(h.WithPool), "/with-pool"))
+	mux.Handle("/without-pool", otelhttp.NewHandler(http.HandlerFunc(h.WithoutPool), "/without-pool"))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
