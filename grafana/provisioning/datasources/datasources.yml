@@ -17,6 +17,13 @@ datasources:
     url: http://prometheus:9090
     editable: true
 
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    url: http://tempo:3100
+    editable: true
+
   - name: Pyroscope
     type: grafana-pyroscope-datasource
     uid: pyroscope
