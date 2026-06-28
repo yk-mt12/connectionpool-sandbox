@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"context"
 	"os"
+	"strings"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
@@ -16,9 +17,11 @@ func NewTracerProvider(ctx context.Context) (*sdktrace.TracerProvider, error) {
 	if endpoint == "" {
 		endpoint = "http://tempo:4318"
 	}
+	// WithEndpoint expects host:port only (no scheme)
+	host := strings.TrimPrefix(strings.TrimPrefix(endpoint, "https://"), "http://")
 
 	exporter, err := otlptracehttp.New(ctx,
-		otlptracehttp.WithEndpoint(endpoint),
+		otlptracehttp.WithEndpoint(host),
 		otlptracehttp.WithInsecure(),
 	)
 	if err != nil {
