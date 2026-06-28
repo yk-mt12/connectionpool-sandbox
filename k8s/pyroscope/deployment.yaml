@@ -24,5 +24,6 @@ spec:
             httpGet:
               path: /ready
               port: 4040
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
